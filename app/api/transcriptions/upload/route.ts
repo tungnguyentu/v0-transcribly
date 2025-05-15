@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Upload the file to Vercel Blob
+    // Upload the file using our mock storage
     const uploadResult = await uploadFile(file, user.id.toString())
 
     // Get transcription options from form data

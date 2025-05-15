@@ -1,4 +1,3 @@
-import { put, del, list } from "@vercel/blob"
 import { nanoid } from "nanoid"
 
 // Define allowed file types
@@ -48,20 +47,19 @@ export function validateFile(file: File): FileValidationResult {
   return { valid: true }
 }
 
+// Mock implementation that doesn't actually store files but returns a URL
 export async function uploadFile(file: File, userId: string) {
   // Generate a unique filename
   const fileExtension = file.name.split(".").pop() || ""
   const uniqueFilename = `${nanoid()}.${fileExtension}`
   const path = `uploads/${userId}/${uniqueFilename}`
 
-  // Upload to Vercel Blob
-  const blob = await put(path, file, {
-    access: "private",
-    multipart: true,
-  })
+  // Instead of uploading to Blob, we'll create a mock URL
+  // In a real implementation, you would store the file in a database or file system
+  const mockUrl = `/api/files/${path}`
 
   return {
-    url: blob.url,
+    url: mockUrl,
     path: path,
     filename: file.name,
     contentType: file.type,
@@ -70,13 +68,13 @@ export async function uploadFile(file: File, userId: string) {
 }
 
 export async function deleteFile(path: string) {
-  await del(path)
+  // Mock implementation - no actual deletion needed
+  console.log(`Mock deletion of file: ${path}`)
+  return true
 }
 
 export async function listUserFiles(userId: string) {
-  const { blobs } = await list({
-    prefix: `uploads/${userId}/`,
-  })
-
-  return blobs
+  // Mock implementation that returns an empty array
+  // In a real implementation, you would query your database for files
+  return []
 }

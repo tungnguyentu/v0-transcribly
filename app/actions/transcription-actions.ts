@@ -48,7 +48,7 @@ export async function uploadAndTranscribe(formData: FormData) {
       }
     }
 
-    // Upload the file to Vercel Blob
+    // Upload the file using our mock storage
     const uploadResult = await uploadFile(file, user.id.toString())
 
     // Get transcription options from form data
@@ -151,9 +151,6 @@ export async function deleteTranscription(id: string) {
 
     // Delete the transcription
     await query("DELETE FROM transcriptions WHERE id = $1", [id])
-
-    // Note: In a production app, you would also delete the file from Vercel Blob
-    // We're skipping that for simplicity in this example
 
     // Revalidate the dashboard and history pages
     revalidatePath("/dashboard")
