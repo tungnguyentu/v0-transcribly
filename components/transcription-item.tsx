@@ -1,14 +1,13 @@
 "use client"
-
-import { useState } from "react"
 import { FileAudio, FileVideo, Trash2, MoreHorizontal, ExternalLink, Clock } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { deleteTranscription } from "@/app/actions/transcription-actions"
+import { useDeleteTranscription } from "@/hooks/use-transcriptions"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useToast } from "@/components/ui/use-toast"
 
 interface TranscriptionItemProps {
   transcription: {
@@ -22,22 +21,30 @@ interface TranscriptionItemProps {
     duration?: number
     error?: string
   }
+  onDelete?: () => void
 }
 
-export function TranscriptionItem({ transcription }: TranscriptionItemProps) {
-  const [isDeleting, setIsDeleting] = useState(false)
+export function TranscriptionItem({ transcription, onDelete }: TranscriptionItemProps) {
+  const { deleteTranscription, isDeleting } = useDeleteTranscription()
   const router = useRouter()
+  const { toast } = useToast()
 
   const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this transcription?")) {
-      setIsDeleting(true)
       try {
         await deleteTranscription(transcription.id)
-        router.refresh()
+        toast({
+          title: "Transcription deleted",
+          description: "The transcription has been deleted successfully.",
+        })
+        if (onDelete) onDelete()
       } catch (error) {
         console.error("Error deleting transcription:", error)
-      } finally {
-        setIsDeleting(false)
+        toast({
+          title: "Error",
+          description: "Failed to delete transcription. Please try again.",
+          variant: "destructive",
+        })
       }
     }
   }
@@ -132,7 +139,9 @@ export function TranscriptionItem({ transcription }: TranscriptionItemProps) {
 
           {transcription.status === "completed" && (
             <Button variant="outline" size="sm" asChild>
-              <Link href={`/dashboard/transcription/${transcription.id}`}>View</Link>
+              <Link href={`/dashboard/transcription/${transcription.id}`} prefetch={true}>
+                View
+              </Link>
             </Button>
           )}
 
@@ -147,10 +156,14 @@ export function TranscriptionItem({ transcription }: TranscriptionItemProps) {
               {transcription.status === "completed" && (
                 <>
                   <DropdownMenuItem asChild>
-                    <Link href={`/dashboard/transcription/${transcription.id}`}>View Details</Link>
+                    <Link href={`/dashboard/transcription/${transcription.id}`} prefetch={true}>
+                      View Details
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href={`/dashboard/transcription/${transcription.id}/edit`}>Edit Subtitles</Link>
+                    <Link href={`/dashboard/transcription/${transcription.id}/edit`} prefetch={true}>
+                      Edit Subtitles
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <a href={transcription.file_url} target="_blank" rel="noopener noreferrer">
