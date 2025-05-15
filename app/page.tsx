@@ -22,7 +22,7 @@ export default function LandingPage() {
                   </p>
                 </div>
                 <div className="flex flex-col gap-3 min-[400px]:flex-row animate-fade-in opacity-0 [animation-delay:400ms]">
-                  <Button asChild size="lg" className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Button asChild size="lg" className="gap-2 border-2 border-primary">
                     <Link href="/signup">
                       Start Transcribing
                       <ArrowRight className="h-4 w-4" />
@@ -210,7 +210,7 @@ export default function LandingPage() {
                   </li>
                 </ul>
                 <div className="mt-auto pt-8">
-                  <Button asChild className="w-full" variant="outline">
+                  <Button asChild className="w-full border-2 border-primary" variant="outline">
                     <Link href="/signup">Get Started</Link>
                   </Button>
                 </div>
@@ -299,7 +299,7 @@ export default function LandingPage() {
                   </li>
                 </ul>
                 <div className="mt-auto pt-8">
-                  <Button asChild className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Button asChild className="w-full border-2 border-primary">
                     <Link href="/signup">Subscribe</Link>
                   </Button>
                 </div>
@@ -401,7 +401,7 @@ export default function LandingPage() {
                   </li>
                 </ul>
                 <div className="mt-auto pt-8">
-                  <Button asChild className="w-full" variant="outline">
+                  <Button asChild className="w-full border-2 border-primary" variant="outline">
                     <Link href="/contact">Contact Sales</Link>
                   </Button>
                 </div>
@@ -417,7 +417,7 @@ export default function LandingPage() {
               <p className="max-w-[85%] text-xl text-muted-foreground">
                 Join thousands of content creators who trust Transcribly for their subtitle needs
               </p>
-              <Button asChild size="lg" className="mt-8 gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button asChild size="lg" className="mt-8 gap-2 border-2 border-primary">
                 <Link href="/signup">
                   Start Transcribing Now
                   <ArrowRight className="h-4 w-4" />
