@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import type React from "react"
 import { SWRConfig } from "swr"
 
 // Default fetcher for SWR
@@ -32,9 +32,5 @@ export const swrOptions = {
 
 // SWR Provider component
 export function SWRProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <SWRConfig value={swrOptions}>
-      {children}
-    </SWRConfig>
-  )
-} 
+  return <SWRConfig value={swrOptions}>{children}</SWRConfig>
+}
