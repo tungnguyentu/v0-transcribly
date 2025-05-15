@@ -39,11 +39,16 @@ export async function registerUser(formData: FormData) {
       lastName,
     })
 
-    // Create a session
-    await createSession(user.id)
+    if (!user) {
+      return { error: "Failed to create user" }
+    }
 
-    // Redirect to dashboard
-    redirect("/dashboard")
+    // After signup, direct user to login page instead of creating a session
+    return { 
+      success: true, 
+      redirectTo: "/login",
+      message: "Account created successfully! Please login with your credentials."
+    }
   } catch (error: any) {
     return { error: error.message || "Failed to register user" }
   }
@@ -74,11 +79,22 @@ export async function loginUser(formData: FormData) {
       return { error: "Invalid email or password" }
     }
 
-    // Create a session
-    await createSession(user.id)
+    // Create a session - this already sets the cookie on the server side
+    // but we'll return the token to the client in case we need it
+    const sessionToken = await createSession(user.id)
 
-    // Redirect to dashboard
-    redirect("/dashboard")
+    // Return success with the session token
+    return { 
+      success: true, 
+      redirectTo: "/dashboard",
+      // Session details to help the client if needed
+      session: {
+        token: sessionToken,
+        userId: user.id,
+        // Set the expiry to match what's set in auth.ts
+        expiresAt: new Date(Date.now() + (7 * 24 * 60 * 60 * 1000)).toISOString()
+      } 
+    }
   } catch (error: any) {
     return { error: error.message || "Failed to login" }
   }
@@ -88,7 +104,7 @@ export async function loginUser(formData: FormData) {
 export async function logoutUser() {
   try {
     await deleteSession("session_token")
-    redirect("/login")
+    return { success: true, redirectTo: "/login" }
   } catch (error: any) {
     return { error: error.message || "Failed to logout" }
   }

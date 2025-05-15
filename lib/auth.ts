@@ -34,7 +34,8 @@ export async function createUser(userData: {
   // Check if user already exists
   const existingUser = await query("SELECT * FROM users WHERE email = $1", [email])
 
-  if (existingUser.rows.length > 0) {
+  // Neon returns result directly as an array of rows
+  if (existingUser && existingUser.length > 0) {
     throw new Error("User with this email already exists")
   }
 
@@ -44,12 +45,12 @@ export async function createUser(userData: {
   // Insert the new user
   const result = await query(
     "INSERT INTO users (email, password_hash, first_name, last_name) VALUES ($1, $2, $3, $4) RETURNING id, email, first_name, last_name, created_at",
-    [email, passwordHash, firstName || null, lastName || null],
+    [email, passwordHash, firstName || null, lastName || null]
   )
 
   // Create default profile and subscription
-  if (result.rows.length > 0) {
-    const userId = result.rows[0].id
+  if (result && result.length > 0) {
+    const userId = result[0].id
 
     // Create user profile
     await query("INSERT INTO user_profiles (user_id) VALUES ($1)", [userId])
@@ -58,25 +59,25 @@ export async function createUser(userData: {
     await query("INSERT INTO subscriptions (user_id, plan_type, status) VALUES ($1, $2, $3)", [
       userId,
       "free",
-      "active",
+      "active"
     ])
   }
 
-  return result.rows[0]
+  return result && result.length > 0 ? result[0] : null
 }
 
 // Get user by email
 export async function getUserByEmail(email: string) {
   const result = await query("SELECT * FROM users WHERE email = $1", [email])
 
-  return result.rows[0] || null
+  return result && result.length > 0 ? result[0] : null
 }
 
 // Get user by ID
 export async function getUserById(id: number) {
   const result = await query("SELECT * FROM users WHERE id = $1", [id])
 
-  return result.rows[0] || null
+  return result && result.length > 0 ? result[0] : null
 }
 
 // Create a session for a user
@@ -87,11 +88,12 @@ export async function createSession(userId: number) {
   await query("INSERT INTO sessions (user_id, session_token, expires_at) VALUES ($1, $2, $3)", [
     userId,
     token,
-    expiresAt,
+    expiresAt
   ])
 
   // Set the session cookie
-  cookies().set({
+  const cookieStore = await cookies()
+  cookieStore.set({
     name: "session_token",
     value: token,
     httpOnly: true,
@@ -108,19 +110,21 @@ export async function createSession(userId: number) {
 export async function getSessionByToken(token: string) {
   const result = await query("SELECT * FROM sessions WHERE session_token = $1 AND expires_at > NOW()", [token])
 
-  return result.rows[0] || null
+  return result && result.length > 0 ? result[0] : null
 }
 
 // Delete a session
 export async function deleteSession(token: string) {
   await query("DELETE FROM sessions WHERE session_token = $1", [token])
 
-  cookies().delete("session_token")
+  const cookieStore = await cookies()
+  cookieStore.delete("session_token")
 }
 
 // Get the current user from the session
 export async function getCurrentUser() {
-  const token = cookies().get("session_token")?.value
+  const cookieStore = await cookies()
+  const token = cookieStore.get("session_token")?.value
 
   if (!token) {
     return null
@@ -173,7 +177,7 @@ export async function createPasswordResetToken(email: string) {
 export async function verifyPasswordResetToken(token: string) {
   const result = await query("SELECT * FROM password_reset_tokens WHERE token = $1 AND expires_at > NOW()", [token])
 
-  return result.rows[0] || null
+  return result && result.length > 0 ? result[0] : null
 }
 
 // Reset a password using a token

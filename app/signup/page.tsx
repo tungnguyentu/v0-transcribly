@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Headphones } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Headphones, CheckCircle } from "lucide-react"
 import { registerUser } from "../actions/auth-actions"
 
 import { Button } from "@/components/ui/button"
@@ -13,21 +14,42 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default function SignupPage() {
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   async function handleSubmit(formData: FormData) {
     setIsLoading(true)
     setError(null)
+    setSuccess(null)
 
     try {
       const result = await registerUser(formData)
 
       if (result?.error) {
         setError(result.error)
+        setIsLoading(false)
+      } else if (result?.success && result?.redirectTo) {
+        // Handle successful registration with success message
+        setSuccess(result.message || "Account created successfully! Redirecting to login page...")
+        
+        // Set a delay before redirecting to show the success message
+        setTimeout(() => {
+          // Add message to URL to display on login page
+          const message = encodeURIComponent(result.message || "Account created successfully! Please login with your credentials.");
+          router.push(`${result.redirectTo}?message=${message}`);
+        }, 2000);
       }
-    } catch (err) {
+    } catch (err: any) {
+      // Check if this is a redirect error (which is not a real error)
+      if (err.message && (err.message.includes('NEXT_REDIRECT') || err.message.includes('Navigation cancelled'))) {
+        // This is a redirect, not an actual error
+        console.log("Redirect detected in error handler");
+        return; // Let Next.js handle the redirect
+      }
+      
       setError("An unexpected error occurred. Please try again.")
-    } finally {
+      console.error("Signup error:", err)
       setIsLoading(false)
     }
   }
@@ -50,6 +72,12 @@ export default function SignupPage() {
             {error && (
               <Alert variant="destructive">
                 <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            {success && (
+              <Alert variant="default" className="bg-green-50 text-green-800 border-green-200">
+                <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                <AlertDescription>{success}</AlertDescription>
               </Alert>
             )}
             <form action={handleSubmit} className="space-y-4">
