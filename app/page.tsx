@@ -47,23 +47,72 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Button asChild size="lg">
+                <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
                   <Link href="/signup">
                     Start Transcribing
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg">
-                  <Link href="#demo">Watch Demo</Link>
-                </Button>
               </div>
             </div>
             <div className="flex items-center justify-center">
-              <div className="relative h-[350px] w-full max-w-[500px] rounded-lg bg-muted/30 p-4 shadow-lg">
-                <div className="absolute left-4 top-4 right-4 h-8 rounded bg-background/80 backdrop-blur" />
-                <div className="absolute left-4 top-16 right-4 h-40 rounded bg-background/80 backdrop-blur" />
-                <div className="absolute left-4 top-60 right-4 h-16 rounded bg-background/80 backdrop-blur" />
-                <div className="absolute bottom-4 left-4 right-4 h-10 rounded bg-primary/10" />
+              <div className="relative w-full max-w-[500px]">
+                <div className="absolute -z-10 h-72 w-72 rounded-full bg-primary/10 blur-3xl"></div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-4">
+                    <div className="rounded-lg border bg-card p-4 shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-md bg-primary/10 p-2">
+                          <FileAudio className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Podcast.mp3</p>
+                          <p className="text-xs text-muted-foreground">28 min • Completed</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="rounded-lg border bg-card p-4 shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-md bg-primary/10 p-2">
+                          <FileVideo className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Tutorial.mp4</p>
+                          <p className="text-xs text-muted-foreground">5 min • Processing</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    <div className="rounded-lg border bg-card p-4 shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-md bg-primary/10 p-2">
+                          <FileVideo className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Demo.mp4</p>
+                          <p className="text-xs text-muted-foreground">12 min • Completed</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="h-full rounded-lg border bg-card p-4 shadow-sm">
+                      <div className="flex h-full flex-col justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="rounded-md bg-primary/10 p-2">
+                            <Languages className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <p className="font-medium">Transcription</p>
+                            <p className="text-xs text-muted-foreground">Multiple languages</p>
+                          </div>
+                        </div>
+                        <div className="mt-4 h-2 w-full rounded-full bg-muted">
+                          <div className="h-2 w-3/4 rounded-full bg-primary"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
