@@ -58,7 +58,7 @@ export async function createUser(userData: {
     // Create free subscription
     await query("INSERT INTO subscriptions (user_id, plan_type, status) VALUES ($1, $2, $3)", [
       userId,
-      "free",
+      "basic",
       "active",
     ])
   }
@@ -122,14 +122,14 @@ export async function deleteSession(token: string) {
 }
 
 // Cache current user for 5 seconds to improve performance
-let userCache: { user: any; timestamp: number } | null = null;
-const CACHE_DURATION = 5000; // 5 seconds in milliseconds
+let userCache: { user: any; timestamp: number } | null = null
+const CACHE_DURATION = 5000 // 5 seconds in milliseconds
 
 // Get the current user from the session
 export async function getCurrentUser() {
   // Check if we have a cached user that is still valid
-  if (userCache && (Date.now() - userCache.timestamp < CACHE_DURATION)) {
-    return userCache.user;
+  if (userCache && Date.now() - userCache.timestamp < CACHE_DURATION) {
+    return userCache.user
   }
 
   const cookieStore = await cookies()
@@ -146,10 +146,10 @@ export async function getCurrentUser() {
   }
 
   const user = await getUserById(session.user_id)
-  
+
   // Cache the user
   if (user) {
-    userCache = { user, timestamp: Date.now() };
+    userCache = { user, timestamp: Date.now() }
   }
 
   return user

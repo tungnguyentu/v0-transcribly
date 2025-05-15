@@ -225,10 +225,10 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="mx-auto grid max-w-5xl gap-8 py-12 md:grid-cols-3">
+          <div className="mx-auto grid max-w-5xl gap-8 py-12 md:grid-cols-2">
             <div className="flex flex-col rounded-lg border p-6 shadow-sm">
               <div className="flex flex-col gap-2">
-                <h3 className="text-2xl font-bold">Free</h3>
+                <h3 className="text-2xl font-bold">Basic</h3>
                 <p className="text-sm text-muted-foreground">Perfect for trying out the service</p>
                 <div className="mt-4">
                   <span className="text-4xl font-bold">$0</span>
@@ -377,108 +377,6 @@ export default function LandingPage() {
               <div className="mt-auto pt-6">
                 <Button asChild className="w-full">
                   <Link href="/signup">Subscribe</Link>
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex flex-col rounded-lg border p-6 shadow-sm">
-              <div className="flex flex-col gap-2">
-                <h3 className="text-2xl font-bold">Enterprise</h3>
-                <p className="text-sm text-muted-foreground">For businesses with high volume needs</p>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold">Custom</span>
-                </div>
-              </div>
-              <ul className="mt-6 space-y-2 text-sm">
-                <li className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>Unlimited transcription</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>Highest accuracy</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>All supported languages</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>Dedicated support</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>API access</span>
-                </li>
-              </ul>
-              <div className="mt-auto pt-6">
-                <Button asChild className="w-full" variant="outline">
-                  <Link href="/contact">Contact Sales</Link>
                 </Button>
               </div>
             </div>

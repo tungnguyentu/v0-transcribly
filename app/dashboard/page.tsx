@@ -1,14 +1,28 @@
 import Link from "next/link"
-import { FileAudio, FileVideo, MoreHorizontal, Plus, Upload } from "lucide-react"
+import { FileAudio, Plus, Upload } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DashboardHeader } from "@/components/dashboard-header"
+import { TranscriptionItem } from "@/components/transcription-item"
+import { getUserTranscriptionStats, getTranscriptions } from "@/app/actions/transcription-actions"
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const statsResult = await getUserTranscriptionStats()
+  const transcriptionsResult = await getTranscriptions(3) // Get 3 most recent transcriptions
+
+  const stats = {
+    minutesUsed: statsResult.minutesUsed || 0,
+    minutesLimit: statsResult.minutesLimit || 0,
+    completedCount: statsResult.completedCount || 0,
+    percentageUsed: statsResult.percentageUsed || 0,
+  }
+
+  const transcriptions = transcriptionsResult.transcriptions || []
+  const hasTranscriptions = transcriptions.length > 0
+
   return (
     <div className="flex min-h-screen flex-col">
       <DashboardHeader />
@@ -29,9 +43,11 @@ export default function DashboardPage() {
                   <CardTitle className="text-sm font-medium">Transcription Minutes Used</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">45/300</div>
-                  <p className="text-xs text-muted-foreground">15% of your monthly quota</p>
-                  <Progress value={15} className="mt-2" />
+                  <div className="text-2xl font-bold">
+                    {stats.minutesUsed}/{stats.minutesLimit}
+                  </div>
+                  <p className="text-xs text-muted-foreground">{stats.percentageUsed}% of your monthly quota</p>
+                  <Progress value={stats.percentageUsed} className="mt-2" />
                 </CardContent>
               </Card>
               <Card className="dashboard-card">
@@ -39,8 +55,12 @@ export default function DashboardPage() {
                   <CardTitle className="text-sm font-medium">Completed Transcriptions</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">12</div>
-                  <p className="text-xs text-muted-foreground">+3 from last month</p>
+                  <div className="text-2xl font-bold">{stats.completedCount}</div>
+                  <p className="text-xs text-muted-foreground">
+                    {stats.completedCount === 0
+                      ? "No transcriptions yet"
+                      : `${stats.completedCount} transcription${stats.completedCount !== 1 ? "s" : ""} completed`}
+                  </p>
                 </CardContent>
               </Card>
               <Card className="dashboard-card">
@@ -48,12 +68,12 @@ export default function DashboardPage() {
                   <CardTitle className="text-sm font-medium">Current Plan</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">Pro</div>
-                  <p className="text-xs text-muted-foreground">5 hours monthly limit</p>
+                  <div className="text-2xl font-bold">Basic</div>
+                  <p className="text-xs text-muted-foreground">{stats.minutesLimit} minutes monthly limit</p>
                 </CardContent>
                 <CardFooter>
                   <Button variant="outline" size="sm" asChild>
-                    <Link href="/dashboard/billing">Manage Subscription</Link>
+                    <Link href="/dashboard/billing">Upgrade Plan</Link>
                   </Button>
                 </CardFooter>
               </Card>
@@ -76,9 +96,11 @@ export default function DashboardPage() {
                         Supports MP3, WAV, MP4, MOV and other common formats (max 500MB)
                       </p>
                     </div>
-                    <Button className="gap-2">
-                      <Plus className="h-4 w-4" />
-                      Select Files
+                    <Button className="gap-2" asChild>
+                      <Link href="/dashboard/upload">
+                        <Plus className="h-4 w-4" />
+                        Select Files
+                      </Link>
                     </Button>
                   </div>
                 </CardContent>
@@ -96,201 +118,66 @@ export default function DashboardPage() {
                       <TabsTrigger value="audio">Audio</TabsTrigger>
                       <TabsTrigger value="video">Video</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="all" className="space-y-4">
-                      <div className="rounded-lg border bg-card transition-colors hover:bg-muted/10">
-                        <div className="flex items-center justify-between p-4">
-                          <div className="flex items-center gap-4">
-                            <div className="rounded-md bg-primary/10 p-2">
-                              <FileVideo className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <p className="font-medium">Product Demo.mp4</p>
-                              <p className="text-xs text-muted-foreground">12 minutes • Completed 2 hours ago</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm">
-                              Download SRT
-                            </Button>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                  <span className="sr-only">More</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>View Details</DropdownMenuItem>
-                                <DropdownMenuItem>Edit Subtitles</DropdownMenuItem>
-                                <DropdownMenuItem>Delete</DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                        </div>
-                      </div>
 
-                      <div className="rounded-lg border bg-card transition-colors hover:bg-muted/10">
-                        <div className="flex items-center justify-between p-4">
-                          <div className="flex items-center gap-4">
-                            <div className="rounded-md bg-primary/10 p-2">
-                              <FileAudio className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <p className="font-medium">Podcast Episode 42.mp3</p>
-                              <p className="text-xs text-muted-foreground">28 minutes • Completed 1 day ago</p>
-                            </div>
+                    {hasTranscriptions ? (
+                      <TabsContent value="all" className="space-y-4">
+                        {transcriptions.map((transcription) => (
+                          <TranscriptionItem key={transcription.id} transcription={transcription} />
+                        ))}
+                      </TabsContent>
+                    ) : (
+                      <TabsContent value="all" className="space-y-4">
+                        <div className="flex flex-col items-center justify-center py-8 text-center">
+                          <div className="rounded-full bg-muted p-6 mb-4">
+                            <FileAudio className="h-8 w-8 text-muted-foreground" />
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm">
-                              Download SRT
-                            </Button>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                  <span className="sr-only">More</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>View Details</DropdownMenuItem>
-                                <DropdownMenuItem>Edit Subtitles</DropdownMenuItem>
-                                <DropdownMenuItem>Delete</DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
+                          <h3 className="text-lg font-medium mb-1">No transcriptions yet</h3>
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Upload your first audio or video file to get started
+                          </p>
+                          <Button asChild>
+                            <Link href="/dashboard/upload">
+                              <Upload className="mr-2 h-4 w-4" />
+                              Upload Media
+                            </Link>
+                          </Button>
                         </div>
-                      </div>
-
-                      <div className="rounded-lg border bg-card transition-colors hover:bg-muted/10">
-                        <div className="flex items-center justify-between p-4">
-                          <div className="flex items-center gap-4">
-                            <div className="rounded-md bg-primary/10 p-2">
-                              <FileVideo className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <p className="font-medium">Tutorial Video.mp4</p>
-                              <p className="text-xs text-muted-foreground">5 minutes • Completed 3 days ago</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm">
-                              Download SRT
-                            </Button>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                  <span className="sr-only">More</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>View Details</DropdownMenuItem>
-                                <DropdownMenuItem>Edit Subtitles</DropdownMenuItem>
-                                <DropdownMenuItem>Delete</DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                        </div>
-                      </div>
-                    </TabsContent>
+                      </TabsContent>
+                    )}
 
                     <TabsContent value="audio" className="space-y-4">
-                      <div className="rounded-lg border bg-card transition-colors hover:bg-muted/10">
-                        <div className="flex items-center justify-between p-4">
-                          <div className="flex items-center gap-4">
-                            <div className="rounded-md bg-primary/10 p-2">
-                              <FileAudio className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <p className="font-medium">Podcast Episode 42.mp3</p>
-                              <p className="text-xs text-muted-foreground">28 minutes • Completed 1 day ago</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm">
-                              Download SRT
-                            </Button>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                  <span className="sr-only">More</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>View Details</DropdownMenuItem>
-                                <DropdownMenuItem>Edit Subtitles</DropdownMenuItem>
-                                <DropdownMenuItem>Delete</DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
+                      <div className="flex flex-col items-center justify-center py-8 text-center">
+                        <div className="rounded-full bg-muted p-6 mb-4">
+                          <FileAudio className="h-8 w-8 text-muted-foreground" />
                         </div>
+                        <h3 className="text-lg font-medium mb-1">No audio transcriptions yet</h3>
+                        <p className="text-sm text-muted-foreground mb-4">
+                          Upload your first audio file to get started
+                        </p>
+                        <Button asChild>
+                          <Link href="/dashboard/upload">
+                            <Upload className="mr-2 h-4 w-4" />
+                            Upload Audio
+                          </Link>
+                        </Button>
                       </div>
                     </TabsContent>
 
                     <TabsContent value="video" className="space-y-4">
-                      <div className="rounded-lg border bg-card transition-colors hover:bg-muted/10">
-                        <div className="flex items-center justify-between p-4">
-                          <div className="flex items-center gap-4">
-                            <div className="rounded-md bg-primary/10 p-2">
-                              <FileVideo className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <p className="font-medium">Product Demo.mp4</p>
-                              <p className="text-xs text-muted-foreground">12 minutes • Completed 2 hours ago</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm">
-                              Download SRT
-                            </Button>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                  <span className="sr-only">More</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>View Details</DropdownMenuItem>
-                                <DropdownMenuItem>Edit Subtitles</DropdownMenuItem>
-                                <DropdownMenuItem>Delete</DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
+                      <div className="flex flex-col items-center justify-center py-8 text-center">
+                        <div className="rounded-full bg-muted p-6 mb-4">
+                          <FileAudio className="h-8 w-8 text-muted-foreground" />
                         </div>
-                      </div>
-
-                      <div className="rounded-lg border bg-card transition-colors hover:bg-muted/10">
-                        <div className="flex items-center justify-between p-4">
-                          <div className="flex items-center gap-4">
-                            <div className="rounded-md bg-primary/10 p-2">
-                              <FileVideo className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <p className="font-medium">Tutorial Video.mp4</p>
-                              <p className="text-xs text-muted-foreground">5 minutes • Completed 3 days ago</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm">
-                              Download SRT
-                            </Button>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                  <span className="sr-only">More</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>View Details</DropdownMenuItem>
-                                <DropdownMenuItem>Edit Subtitles</DropdownMenuItem>
-                                <DropdownMenuItem>Delete</DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                        </div>
+                        <h3 className="text-lg font-medium mb-1">No video transcriptions yet</h3>
+                        <p className="text-sm text-muted-foreground mb-4">
+                          Upload your first video file to get started
+                        </p>
+                        <Button asChild>
+                          <Link href="/dashboard/upload">
+                            <Upload className="mr-2 h-4 w-4" />
+                            Upload Video
+                          </Link>
+                        </Button>
                       </div>
                     </TabsContent>
                   </Tabs>

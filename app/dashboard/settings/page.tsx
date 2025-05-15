@@ -29,25 +29,25 @@ export default function SettingsPage() {
   // Helper function to safely get notification preference
   const getNotificationPreference = (preferenceName: string): boolean => {
     try {
-      const preferences = profileData?.profile?.notification_preferences;
-      if (!preferences) return false;
-      
+      const preferences = profileData?.profile?.notification_preferences
+      if (!preferences) return false
+
       // If it's already an object, use it directly
-      if (typeof preferences === 'object') {
-        return preferences[preferenceName] || false;
+      if (typeof preferences === "object") {
+        return preferences[preferenceName] || false
       }
-      
+
       // If it's a string, try to parse it
-      if (typeof preferences === 'string') {
-        return JSON.parse(preferences)[preferenceName] || false;
+      if (typeof preferences === "string") {
+        return JSON.parse(preferences)[preferenceName] || false
       }
-      
-      return false;
+
+      return false
     } catch (error) {
-      console.error("Error parsing notification preferences:", error);
-      return false;
+      console.error("Error parsing notification preferences:", error)
+      return false
     }
-  };
+  }
 
   useEffect(() => {
     async function loadProfile() {
@@ -249,7 +249,7 @@ export default function SettingsPage() {
                           <Switch
                             id="email-notifications"
                             name="email-notifications"
-                            defaultChecked={getNotificationPreference('email')}
+                            defaultChecked={getNotificationPreference("email")}
                           />
                         </div>
                         <div className="flex items-center justify-between">
@@ -262,7 +262,7 @@ export default function SettingsPage() {
                           <Switch
                             id="marketing-emails"
                             name="marketing-emails"
-                            defaultChecked={getNotificationPreference('marketing')}
+                            defaultChecked={getNotificationPreference("marketing")}
                           />
                         </div>
                         <Button type="submit" disabled={isUpdating}>
@@ -321,9 +321,9 @@ export default function SettingsPage() {
                       <div className="rounded-lg border p-4">
                         <div className="flex items-start justify-between">
                           <div>
-                            <p className="font-medium">Pro Plan</p>
+                            <p className="font-medium">Basic Plan</p>
                             <p className="text-sm text-muted-foreground">
-                              $19/month • 5 hours of transcription per month
+                              Free • 10 minutes of transcription per month
                             </p>
                           </div>
                           <div className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
@@ -332,25 +332,24 @@ export default function SettingsPage() {
                         </div>
                         <Separator className="my-4" />
                         <div className="space-y-1">
-                          <p className="text-sm">Next billing date: June 15, 2025</p>
-                          <p className="text-sm">Payment method: Visa ending in 4242</p>
+                          <p className="text-sm">No billing information</p>
                         </div>
                       </div>
 
                       <div className="space-y-2">
                         <Label>Change Plan</Label>
-                        <RadioGroup defaultValue="pro">
-                          <div className="flex items-center space-x-2 rounded-lg border p-4">
-                            <RadioGroupItem value="free" id="free" />
-                            <Label htmlFor="free" className="flex flex-col">
-                              <span>Free Plan</span>
+                        <RadioGroup defaultValue="basic">
+                          <div className="flex items-center space-x-2 rounded-lg border border-primary bg-primary/5 p-4">
+                            <RadioGroupItem value="basic" id="basic" />
+                            <Label htmlFor="basic" className="flex flex-col">
+                              <span>Basic Plan</span>
                               <span className="text-sm font-normal text-muted-foreground">
                                 10 minutes of transcription per month
                               </span>
                             </Label>
                             <div className="ml-auto font-medium">$0/month</div>
                           </div>
-                          <div className="flex items-center space-x-2 rounded-lg border border-primary bg-primary/5 p-4">
+                          <div className="flex items-center space-x-2 rounded-lg border p-4">
                             <RadioGroupItem value="pro" id="pro" />
                             <Label htmlFor="pro" className="flex flex-col">
                               <span>Pro Plan</span>
@@ -359,16 +358,6 @@ export default function SettingsPage() {
                               </span>
                             </Label>
                             <div className="ml-auto font-medium">$19/month</div>
-                          </div>
-                          <div className="flex items-center space-x-2 rounded-lg border p-4">
-                            <RadioGroupItem value="enterprise" id="enterprise" />
-                            <Label htmlFor="enterprise" className="flex flex-col">
-                              <span>Enterprise Plan</span>
-                              <span className="text-sm font-normal text-muted-foreground">
-                                Custom pricing and features
-                              </span>
-                            </Label>
-                            <div className="ml-auto font-medium">Contact Sales</div>
                           </div>
                         </RadioGroup>
                       </div>
@@ -386,38 +375,8 @@ export default function SettingsPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="rounded-lg border">
-                          <div className="flex items-center justify-between p-4">
-                            <div>
-                              <p className="font-medium">Invoice #12345</p>
-                              <p className="text-sm text-muted-foreground">May 15, 2025 • $19.00</p>
-                            </div>
-                            <Button variant="outline" size="sm">
-                              Download
-                            </Button>
-                          </div>
-                        </div>
-                        <div className="rounded-lg border">
-                          <div className="flex items-center justify-between p-4">
-                            <div>
-                              <p className="font-medium">Invoice #12344</p>
-                              <p className="text-sm text-muted-foreground">April 15, 2025 • $19.00</p>
-                            </div>
-                            <Button variant="outline" size="sm">
-                              Download
-                            </Button>
-                          </div>
-                        </div>
-                        <div className="rounded-lg border">
-                          <div className="flex items-center justify-between p-4">
-                            <div>
-                              <p className="font-medium">Invoice #12343</p>
-                              <p className="text-sm text-muted-foreground">March 15, 2025 • $19.00</p>
-                            </div>
-                            <Button variant="outline" size="sm">
-                              Download
-                            </Button>
-                          </div>
+                        <div className="flex flex-col items-center justify-center py-8 text-center">
+                          <p className="text-sm text-muted-foreground">No billing history available</p>
                         </div>
                       </div>
                     </CardContent>
