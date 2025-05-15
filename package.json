@@ -72,7 +72,7 @@
     "lucide-react": "^0.454.0",
     "mysql2": "latest",
     "next": "15.2.4",
-    "next-themes": "^0.4.4",
+    "next-themes": "latest",
     "pg": "latest",
     "postgres": "latest",
     "react": "^19",

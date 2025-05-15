@@ -13,7 +13,9 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
 
   // Debug logging
-  console.log(`Middleware: Path=${path}, isAuthenticated=${isAuthenticated}, sessionToken=${sessionToken ? 'exists' : 'missing'}`);
+  console.log(
+    `Middleware: Path=${path}, isAuthenticated=${isAuthenticated}, sessionToken=${sessionToken ? "exists" : "missing"}`,
+  )
 
   // Check if the route requires authentication
   const isProtectedRoute = protectedRoutes.some((route) => path === route || path.startsWith(`${route}/`))
@@ -22,22 +24,22 @@ export async function middleware(request: NextRequest) {
   const isAuthRoute = authRoutes.some((route) => path === route || path.startsWith(`${route}/`))
 
   // Debug logging
-  console.log(`Middleware: isProtectedRoute=${isProtectedRoute}, isAuthRoute=${isAuthRoute}`);
+  console.log(`Middleware: isProtectedRoute=${isProtectedRoute}, isAuthRoute=${isAuthRoute}`)
 
   // Redirect authenticated users away from auth routes
   if (isAuthenticated && isAuthRoute) {
-    console.log("Redirecting authenticated user from auth route to dashboard");
+    console.log("Redirecting authenticated user from auth route to dashboard")
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
   // Redirect non-authenticated users away from protected routes
   if (!isAuthenticated && isProtectedRoute) {
-    console.log("Redirecting non-authenticated user from protected route to login");
+    console.log("Redirecting non-authenticated user from protected route to login")
     return NextResponse.redirect(new URL("/login", request.url))
   }
 
   // Allow the request to proceed
-  console.log("Middleware: allowing request to proceed");
+  console.log("Middleware: allowing request to proceed")
   return NextResponse.next()
 }
 

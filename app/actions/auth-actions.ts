@@ -1,6 +1,4 @@
 "use server"
-
-import { redirect } from "next/navigation"
 import {
   createUser,
   getUserByEmail,
@@ -44,10 +42,10 @@ export async function registerUser(formData: FormData) {
     }
 
     // After signup, direct user to login page instead of creating a session
-    return { 
-      success: true, 
+    return {
+      success: true,
       redirectTo: "/login",
-      message: "Account created successfully! Please login with your credentials."
+      message: "Account created successfully! Please login with your credentials.",
     }
   } catch (error: any) {
     return { error: error.message || "Failed to register user" }
@@ -84,16 +82,16 @@ export async function loginUser(formData: FormData) {
     const sessionToken = await createSession(user.id)
 
     // Return success with the session token
-    return { 
-      success: true, 
+    return {
+      success: true,
       redirectTo: "/dashboard",
       // Session details to help the client if needed
       session: {
         token: sessionToken,
         userId: user.id,
         // Set the expiry to match what's set in auth.ts
-        expiresAt: new Date(Date.now() + (7 * 24 * 60 * 60 * 1000)).toISOString()
-      } 
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      },
     }
   } catch (error: any) {
     return { error: error.message || "Failed to login" }

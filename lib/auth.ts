@@ -45,7 +45,7 @@ export async function createUser(userData: {
   // Insert the new user
   const result = await query(
     "INSERT INTO users (email, password_hash, first_name, last_name) VALUES ($1, $2, $3, $4) RETURNING id, email, first_name, last_name, created_at",
-    [email, passwordHash, firstName || null, lastName || null]
+    [email, passwordHash, firstName || null, lastName || null],
   )
 
   // Create default profile and subscription
@@ -59,7 +59,7 @@ export async function createUser(userData: {
     await query("INSERT INTO subscriptions (user_id, plan_type, status) VALUES ($1, $2, $3)", [
       userId,
       "free",
-      "active"
+      "active",
     ])
   }
 
@@ -88,7 +88,7 @@ export async function createSession(userId: number) {
   await query("INSERT INTO sessions (user_id, session_token, expires_at) VALUES ($1, $2, $3)", [
     userId,
     token,
-    expiresAt
+    expiresAt,
   ])
 
   // Set the session cookie
