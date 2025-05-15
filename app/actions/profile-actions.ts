@@ -3,6 +3,11 @@
 import { getCurrentUser } from "@/lib/auth"
 import { query } from "@/lib/db"
 
+// Type guard to check if an object has rows property
+function hasRows(obj: any): obj is { rows: any[] } {
+  return obj && typeof obj === 'object' && 'rows' in obj && Array.isArray(obj.rows);
+}
+
 // Get user profile
 export async function getUserProfile() {
   try {
@@ -14,7 +19,10 @@ export async function getUserProfile() {
 
     const profileResult = await query("SELECT * FROM user_profiles WHERE user_id = $1", [user.id])
 
-    const profile = profileResult.rows[0] || null
+    // Access result data safely with type guard
+    const profile = hasRows(profileResult) 
+      ? profileResult.rows[0] || null 
+      : Array.isArray(profileResult) ? profileResult[0] || null : null
 
     return {
       user: {
@@ -81,7 +89,10 @@ export async function getUserSubscription() {
 
     const subscriptionResult = await query("SELECT * FROM subscriptions WHERE user_id = $1", [user.id])
 
-    const subscription = subscriptionResult.rows[0] || null
+    // Access result data safely with type guard
+    const subscription = hasRows(subscriptionResult) 
+      ? subscriptionResult.rows[0] || null 
+      : Array.isArray(subscriptionResult) ? subscriptionResult[0] || null : null
 
     return { subscription }
   } catch (error: any) {
@@ -102,7 +113,10 @@ export async function getBillingHistory() {
       user.id,
     ])
 
-    const billingHistory = billingResult.rows || []
+    // Access result data safely with type guard
+    const billingHistory = hasRows(billingResult) 
+      ? billingResult.rows 
+      : Array.isArray(billingResult) ? billingResult : []
 
     return { billingHistory }
   } catch (error: any) {

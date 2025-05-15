@@ -26,6 +26,29 @@ export default function SettingsPage() {
   const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null)
   const [isUpdating, setIsUpdating] = useState(false)
 
+  // Helper function to safely get notification preference
+  const getNotificationPreference = (preferenceName: string): boolean => {
+    try {
+      const preferences = profileData?.profile?.notification_preferences;
+      if (!preferences) return false;
+      
+      // If it's already an object, use it directly
+      if (typeof preferences === 'object') {
+        return preferences[preferenceName] || false;
+      }
+      
+      // If it's a string, try to parse it
+      if (typeof preferences === 'string') {
+        return JSON.parse(preferences)[preferenceName] || false;
+      }
+      
+      return false;
+    } catch (error) {
+      console.error("Error parsing notification preferences:", error);
+      return false;
+    }
+  };
+
   useEffect(() => {
     async function loadProfile() {
       try {
@@ -226,7 +249,7 @@ export default function SettingsPage() {
                           <Switch
                             id="email-notifications"
                             name="email-notifications"
-                            defaultChecked={profileData?.profile?.notification_preferences?.email}
+                            defaultChecked={getNotificationPreference('email')}
                           />
                         </div>
                         <div className="flex items-center justify-between">
@@ -239,7 +262,7 @@ export default function SettingsPage() {
                           <Switch
                             id="marketing-emails"
                             name="marketing-emails"
-                            defaultChecked={profileData?.profile?.notification_preferences?.marketing}
+                            defaultChecked={getNotificationPreference('marketing')}
                           />
                         </div>
                         <Button type="submit" disabled={isUpdating}>

@@ -121,8 +121,17 @@ export async function deleteSession(token: string) {
   cookieStore.delete("session_token")
 }
 
+// Cache current user for 5 seconds to improve performance
+let userCache: { user: any; timestamp: number } | null = null;
+const CACHE_DURATION = 5000; // 5 seconds in milliseconds
+
 // Get the current user from the session
 export async function getCurrentUser() {
+  // Check if we have a cached user that is still valid
+  if (userCache && (Date.now() - userCache.timestamp < CACHE_DURATION)) {
+    return userCache.user;
+  }
+
   const cookieStore = await cookies()
   const token = cookieStore.get("session_token")?.value
 
@@ -137,6 +146,11 @@ export async function getCurrentUser() {
   }
 
   const user = await getUserById(session.user_id)
+  
+  // Cache the user
+  if (user) {
+    userCache = { user, timestamp: Date.now() };
+  }
 
   return user
 }

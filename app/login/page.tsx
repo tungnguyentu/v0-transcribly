@@ -47,7 +47,7 @@ export default function LoginPage() {
         // and allow the cookie to be properly set
         setTimeout(() => {
           router.push(result.redirectTo)
-        }, 1500)
+        }, 500)
       }
     } catch (err: any) {
       // Check if this is a redirect error (which is not a real error)
