@@ -9,25 +9,41 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
-            <Headphones className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">Transcribly</span>
+            <div className="rounded-full bg-gradient-to-r from-primary to-primary/80 p-2">
+              <Headphones className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">
+              Transcribly
+            </span>
           </div>
           <nav className="hidden gap-6 md:flex">
-            <Link href="#features" className="text-sm font-medium transition-colors hover:text-primary">
+            <Link
+              href="#features"
+              className="relative px-1 py-2 text-sm font-medium transition-colors hover:text-primary text-foreground/70 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+            >
               Features
             </Link>
-            <Link href="#pricing" className="text-sm font-medium transition-colors hover:text-primary">
+            <Link
+              href="#pricing"
+              className="relative px-1 py-2 text-sm font-medium transition-colors hover:text-primary text-foreground/70 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+            >
               Pricing
             </Link>
-            <Link href="#faq" className="text-sm font-medium transition-colors hover:text-primary">
+            <Link
+              href="#faq"
+              className="relative px-1 py-2 text-sm font-medium transition-colors hover:text-primary text-foreground/70 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+            >
               FAQ
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm font-medium transition-colors hover:text-primary">
+            <Link href="/login" className="hidden text-sm font-medium transition-colors hover:text-primary md:block">
               Login
             </Link>
-            <Button asChild>
+            <Button
+              asChild
+              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+            >
               <Link href="/signup">Get Started</Link>
             </Button>
           </div>

@@ -1,20 +1,20 @@
 "use client"
 
-import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Headphones, Moon, Settings, Sun } from "lucide-react"
+import Link from "next/link"
+
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Settings } from "lucide-react"
 import { useTheme } from "next-themes"
-import { cn } from "@/lib/utils"
-
-interface NavItem {
-  title: string
-  href: string
-}
+import { Headphones, Sun, Moon } from "lucide-react"
 
 interface DashboardHeaderProps {
-  navItems?: NavItem[]
+  navItems?: {
+    title: string
+    href: string
+  }[]
   userInitials?: string
 }
 
@@ -34,16 +34,27 @@ export function DashboardHeader({
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           <Link href="/dashboard" className="flex items-center gap-2 transition-opacity hover:opacity-90">
-            <div className="rounded-md bg-primary p-1">
+            <div className="rounded-full bg-gradient-to-r from-primary to-primary/80 p-2">
               <Headphones className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold">Transcribly</span>
+            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">
+              Transcribly
+            </span>
           </Link>
         </div>
 
         <nav className="hidden gap-6 md:flex">
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className={cn("nav-link", pathname === item.href && "active")}>
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "relative px-1 py-2 text-sm font-medium transition-colors hover:text-primary",
+                pathname === item.href ? "text-primary" : "text-foreground/70",
+                "after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full",
+                pathname === item.href && "after:w-full",
+              )}
+            >
               {item.title}
             </Link>
           ))}
@@ -61,7 +72,7 @@ export function DashboardHeader({
             <span className="sr-only">Toggle theme</span>
           </Button>
 
-          <Button variant="outline" size="icon" asChild>
+          <Button variant="outline" size="icon" asChild className="rounded-full">
             <Link href="/dashboard/settings">
               <Settings className="h-4 w-4" />
               <span className="sr-only">Settings</span>
@@ -70,8 +81,8 @@ export function DashboardHeader({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full overflow-hidden border">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
                   <span className="text-sm font-medium">{userInitials}</span>
                 </div>
               </Button>
