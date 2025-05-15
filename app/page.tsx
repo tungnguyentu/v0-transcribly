@@ -28,9 +28,6 @@ export default function LandingPage() {
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button variant="outline" size="lg">
-                    <Link href="#demo">Watch Demo</Link>
-                  </Button>
                 </div>
               </div>
               <div className="flex items-center justify-center animate-fade-in opacity-0 [animation-delay:600ms]">
